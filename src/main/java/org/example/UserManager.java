@@ -23,6 +23,11 @@ public class UserManager {
         System.out.print("First Name: ");
         String firstName = scanner.nextLine();
 
+        if (firstName.equalsIgnoreCase("QUIT")) {
+            System.out.println("Exiting app.");
+            System.exit(0);
+        }
+
         System.out.print("Last Name: ");
         String lastName = scanner.nextLine();
 
@@ -35,8 +40,6 @@ public class UserManager {
         User newUser = new User(firstName, lastName, email, password);
 
         userManager.saveUser(newUser);
-
-        System.out.println("Account created: " +newUser.getFirstName() + " " + newUser.getLastName());
     }
 
     public void showUsers() {
