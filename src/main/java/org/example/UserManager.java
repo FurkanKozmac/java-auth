@@ -1,22 +1,20 @@
 package org.example;
-import java.util.ArrayList;
-import  java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.Scanner;
+import java.io.IOException;
 
 public class UserManager {
-    private final List<User> userList;
-
-    public UserManager() {
-        userList = new ArrayList<>();
-    }
-
-    public List<User> getUserList() {
-        return userList;
-    }
 
     public void saveUser(User user) {
-        userList.add(user);
-        System.out.println("User add successfully: " + user.getFirstName() + " " + user.getLastName());
+
+        try (FileWriter writer = new FileWriter("user_data.txt", true)) {
+            writer.write(user.getFirstName() + "," + user.getLastName() + "," + user.getEmail() + "," + user.getPassword() + "\n");
+            System.out.println("User add successfully: " + user.getFirstName() + " " + user.getLastName());
+        } catch (IOException e) {
+            System.out.println("Error saving user data to file: " + e.getMessage());
+        }
     }
 
     public void addUser(Scanner scanner, UserManager userManager) {
@@ -38,18 +36,25 @@ public class UserManager {
         String password = scanner.nextLine().trim();
 
         User newUser = new User(firstName, lastName, email, password);
-
         userManager.saveUser(newUser);
     }
 
     public void showUsers() {
         System.out.println("Users:");
-        for (User user : userList) {
-            System.out.println("First Name: " + user.getFirstName() +
-                    ", Last Name: " + user.getLastName() +
-                    ", Email: " + user.getEmail());
+
+        try (Scanner fileScanner = new Scanner(new File("user_data.txt"))) {
+            while (fileScanner.hasNextLine()) {
+                String[] userData = fileScanner.nextLine().split(",");
+                if (userData.length == 4) {
+                    String fetchedFirstName = userData[0];
+                    String fetchedLastName = userData[1];
+
+                    System.out.println(fetchedFirstName + " " + fetchedLastName);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("User data file not found. Creating a new file.");
         }
     }
-
-
 }

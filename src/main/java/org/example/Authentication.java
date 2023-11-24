@@ -1,5 +1,8 @@
 package org.example;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Authentication {
@@ -27,24 +30,32 @@ public class Authentication {
             System.exit(0);
         }
 
-            User loggedInUser = findUserByEmailAndPassword(email, password);
+        fetchUserData(email, password);
+    }
 
-            if (loggedInUser != null) {
-                System.out.println("Login successful!");
-                System.out.println("Welcome " + loggedInUser.getFirstName() + " " + loggedInUser.getLastName());
-                System.exit(0);
-            } else {
-                System.out.println("Email or password is not valid.");
-                logIn();
+    private void fetchUserData(String email, String password) {
+
+        try (Scanner fileScanner = new Scanner(new File("user_data.txt"))) {
+            while (fileScanner.hasNextLine()) {
+                String[] userData = fileScanner.nextLine().split(",");
+                if (userData.length == 4) {
+                    String fetchedFirstName = userData[0];
+                    String fetchedLastName = userData[1];
+                    String fetchedEmail = userData[2];
+                    String fetchedPassword = userData[3];
+
+                    if (Objects.equals(email, fetchedEmail) && Objects.equals(password, fetchedPassword)) {
+                        System.out.println("Logged in! Welcome " + fetchedFirstName + " " + fetchedLastName);
+                        System.exit(0);
+                    }
+                }
             }
 
+            System.out.println("Email or password is not valid. Please try again.");
+            logIn();
+
+        } catch (FileNotFoundException e) {
+            System.out.println("User data file not found. Creating a new file.");
         }
-    private User findUserByEmailAndPassword(String email, String password) {
-        for (User user : userManager.getUserList()) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-        return null;
     }
 }

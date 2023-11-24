@@ -1,4 +1,5 @@
 package org.example;
+
 import java.util.Scanner;
 
 public class Main {
@@ -20,10 +21,12 @@ public class Main {
             scanner.nextLine();
 
             switch (choice) {
-                case 1: authentication.logIn();
-                break;
-                case 2: authentication.registerAccount();
-                break;
+                case 1:
+                    authentication.logIn();
+                    break;
+                case 2:
+                    authentication.registerAccount();
+                    break;
                 case 3:
                     userManager.showUsers();
                     break;
@@ -34,7 +37,6 @@ public class Main {
                 default:
                     System.out.println("Please enter valid value.");
             }
-
 
 
         }
